@@ -27,6 +27,17 @@ async function main() {
     `Academic contract deployed to ${academic.address}`
   );
 
+  const ProfessorContract = await hre.ethers.getContractFactory("ProfessorContract");
+  const professorContract = await ProfessorContract.deploy();
+  await professorContract.deployed();
+  console.log(`Professor Contract deployed to ${professorContract.address}`);
+
+  const DisciplinaContract = await hre.ethers.getContractFactory("DisciplinaContract");
+  const disciplinaContract = await DisciplinaContract.deploy(1, "DiscTeste", professorContract.address, 10);
+  await disciplinaContract.deployed();
+  console.log(`Disciplina Contract deployed to ${disciplinaContract.address}`);
+
+
   const AlunoContract = await hre.ethers.getContractFactory("AlunoContract");
   const alunoContract = await AlunoContract.deploy(academic.address);
   await alunoContract.deployed();

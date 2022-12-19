@@ -11,11 +11,14 @@ contract DisciplinaContract{
 
     mapping(uint => uint[]) alunosInscritos;
 
-    
-    constructor(uint id, string memory nome, address professor){
+    uint discPrice;
+    uint public DiscPrice = discPrice; 
+
+    constructor(uint id, string memory nome, address professor, uint price){
         discId = id;
         discName = nome;        
         discProf = professor;
+        discPrice = price;
     }
 
 
