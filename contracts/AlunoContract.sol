@@ -36,6 +36,10 @@ contract AlunoContract is IAlunoContract{
     function setAluno(uint id, Aluno memory aluno) onlyOwner public override {
         alunoById[id] = aluno;
     } 
+
+    function setAlunoContractAdress(address addr)  public override{
+        return owner;
+    }
     
     function myPrivateFuncion() private {
 
