@@ -24,12 +24,15 @@ contract DisciplinaContract is IDisciplinaContract{
     address _alunoContractAddr;
 
 
-    constructor(uint id, string memory nome, address professor, uint price){
+    constructor(){
+
+    }
+    /*constructor(uint id, string memory nome, address professor, uint price){
         discId = id;
         discName = nome;        
         discProf = professor;
         discPrice = price;
-    }
+    }*/
     
    function inserirDisciplina(uint id, string memory nome, address professor)  public {
         disciplinaById[id] = Disciplina(id, nome, professor);

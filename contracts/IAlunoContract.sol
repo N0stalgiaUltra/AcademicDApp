@@ -12,5 +12,5 @@ interface IAlunoContract{
 
     function getAlunoById(uint id) external view returns (Aluno memory);
 
-    function setAlunoContractAdress(address addr) external;
+    //function setAlunoContractAdress(address addr) external;
 }

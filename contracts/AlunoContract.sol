@@ -37,9 +37,7 @@ contract AlunoContract is IAlunoContract{
         alunoById[id] = aluno;
     } 
 
-    function setAlunoContractAdress(address addr)  public override{
-        return owner;
-    }
+
     
     function myPrivateFuncion() private {
 
