@@ -2,21 +2,28 @@
 
 pragma solidity >=0.7.0 <0.9.0;
 
-
 struct Aluno{
     uint id;
-    string nome; 
+    string nome;
+    address aluno;
 }
 
 struct Disciplina{
     uint id;
     string nome;
-    address professor; 
+    address professor;
+}
+
+struct Professor{
+    uint id;
+    string nome;
+    address professorAddr;
 }
 
 enum Periodo {
-    INSCRICAO_ALUNOS,
-    LANCAMENTO_NOTAS
+    INSCRICAO,
+    LANCAMENTO_NOTAS,
+    FIM_PERIODO
 }
 
 

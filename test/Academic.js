@@ -72,7 +72,7 @@ describe("Academic", function () {
             const { academic, alunoContract, professorContract, disciplinaContract } = await loadFixture(deployContracts);
             const [owner, professor, otherAccount] = await hre.ethers.getSigners();
 
-            await disciplinaContract.inserirDisciplina(1, "Blockchain", professorContract.address);
+            await disciplinaContract.inserirDisciplina(1, "Blockchain", professor.address);
             
             await alunoContract.inserirAluno(1, "Diogo");
             

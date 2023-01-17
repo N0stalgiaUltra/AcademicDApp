@@ -3,8 +3,11 @@
 pragma solidity >=0.7.0 <0.9.0;
 
 import "./AcademicTypes.sol";
-//import {AcademicUtils} from "./AcademicUtils.sol"; //PRECISA SER INSERIDO EM OUTRO CONTRATO
 import "./IAlunoContract.sol";
+import "./IDisciplinaContract.sol";
+
+import "hardhat/console.sol";
+
 
 /**
  * @title Academic
@@ -12,27 +15,46 @@ import "./IAlunoContract.sol";
  */
 contract Academic {
 
-   Periodo public etapa;
+   Periodo public etapa;   
+   address public owner;
    
+   address _disciplinaContractAddr;
+   address _professorContractAddr;
    address _alunoContractAddr;
-   address owner;
+   
    
    constructor(){
-       etapa = Periodo.INSCRICAO_ALUNOS;
+       etapa = Periodo.INSCRICAO;
        owner = msg.sender;
    }
 
    modifier onlyOwner(){
-       require(msg.sender == owner, "Nao autorizado");
+       require(msg.sender == owner, "Nao autorizado.");
        _;
    }
 
     
-    function setAlunoContractAddress(address alunoContractAddr) public{
+    function setAlunoContractAddress(address alunoContractAddr) public onlyOwner{
        _alunoContractAddr = alunoContractAddr;
     }
 
+   function setDisciplinaContractAddress(address disciplinaContractAddr) public onlyOwner
+    {
+        _disciplinaContractAddr = disciplinaContractAddr;
+    }
+    
+    function setProfessorContractAddress(address professorContractAddr) public onlyOwner
+    {
+        _professorContractAddr = professorContractAddr;
+    }
 
+    function fecharPeriodo() onlyOwner public  {
+        etapa = Periodo.FIM_PERIODO;
+    }
+
+    function abrirInscricoes() onlyOwner public  {
+        etapa = Periodo.INSCRICAO;
+    }
    function abrirLancamentoNota() onlyOwner public {
        etapa = Periodo.LANCAMENTO_NOTAS;
    }
