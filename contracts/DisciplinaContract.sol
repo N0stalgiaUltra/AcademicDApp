@@ -20,7 +20,7 @@ contract DisciplinaContract is IDisciplinaContract{
     address _professorContractAddr;
 
     modifier onlyOwner(){
-       require(msg.sender == owner, "Nao autorizado.");
+       require(address(msg.sender) == address(owner), "Nao autorizado.");
        _;
     }
     

@@ -2,22 +2,13 @@ const { expect } = require("chai");
 const {
     loadFixture,
 } = require("@nomicfoundation/hardhat-network-helpers");
+const { ethers } = require("hardhat");
+
 
 describe("Academic", function () {
 
     async function deployContracts() {
-        const AcademicUtils = await hre.ethers.getContractFactory("AcademicUtils");
-        const academicUtils = await AcademicUtils.deploy();
-        await academicUtils.deployed();
-        console.log(
-            `AcademicUtils contract deployed to ${academicUtils.address}`
-        );
-
-        /*const Academic = await hre.ethers.getContractFactory("Academic", {
-            libraries: {
-            AcademicUtils: academicUtils.address,
-            },
-        });*/
+        
         const Academic = await hre.ethers.getContractFactory("Academic");
         const academic = await Academic.deploy();
         await academic.deployed();
@@ -27,14 +18,14 @@ describe("Academic", function () {
         );
        
         const DisciplinaContract = await hre.ethers.getContractFactory("DisciplinaContract");
-        const disciplinaContract =  await DisciplinaContract.deploy();
+        const disciplinaContract =  await DisciplinaContract.deploy(academic.address);
         await disciplinaContract.deployed();
         console.log(
             `DisciplinaContract contract deployed to ${disciplinaContract.address}`
         );
 
         const ProfessorContract = await hre.ethers.getContractFactory("ProfessorContract");
-        const professorContract = await ProfessorContract.deploy();
+        const professorContract = await ProfessorContract.deploy(academic.address);
         await professorContract.deployed();
         console.log(
             `ProfessorContract contract deployed to ${professorContract.address}`
@@ -47,62 +38,81 @@ describe("Academic", function () {
             `AlunoContract contract deployed to ${alunoContract.address}`
         );
 
+        const AcademicToken = await hre.ethers.getContractFactory("AcademicToken");
+        const academicToken = await AcademicToken.deploy();
+        await academicToken.deployed();
+        console.log(
+            `AcademicToken contract deployed to ${academicToken.address}`
+        );
+
+        const AcademicCertificate = await hre.ethers.getContractFactory("AcademicCertificate");
+        const academicCertificate = await AcademicCertificate.deploy();
+        await academicCertificate.deployed();
+        console.log(
+            `AcademicCertificate contract deployed to ${academicCertificate.address}`
+        );
+        
         const result = await academic.setAlunoContractAddress(alunoContract.address);
         await result.wait(1);
         console.log(
-            `Deploy finished with success!`
+            `Aluno Contract deploy finished with success!`
+        );
+        
+        const resultDisciplina = await academic.setDisciplinaContractAddress(disciplinaContract.address);
+        await resultDisciplina.wait(1);
+        console.log(
+            `Changed DisciplinaContract address in Academic with success!`
         );
 
-        return {academic, alunoContract, disciplinaContract, professorContract};
+        const resultProfessor = await academic.setProfessorContractAddress(professorContract.address);
+        await resultProfessor.wait(1);
+        console.log(
+            `Changed ProfessorContract address in Academic with success!`
+        );
+        
+        const resultProfessorAluno = await professorContract.setAlunoContractAddress(alunoContract.address)
+        await resultProfessorAluno.wait(1)
+
+        const resultProfessorDisciplina = await professorContract.setDisciplinaContractAddress(disciplinaContract.address)
+        await resultProfessorDisciplina.wait(1)
+        
+        const resultAlunoDisciplina = await alunoContract.setDisciplinaContractAddress(disciplinaContract.address);
+        await resultAlunoDisciplina.wait(1);
+        
+        const resultDisciplinaProfessor = await disciplinaContract.setProfessorContractAddress(professorContract.address)
+        await resultDisciplinaProfessor.wait(1)
+      
+        const resultDisciplinaAluno = await disciplinaContract.setAlunoContractAddress(alunoContract.address)
+        await resultDisciplinaAluno.wait(1)
+
+        console.log(
+            `Deploy finished with success!`
+        );
+       
+        return {academic, alunoContract, professorContract, disciplinaContract, academicToken, academicCertificate};
     }
 
 
 
     describe("Academic Contract", function () {
+        
+        it("Should not a non-admin register a student", async function () {
+            const { academic, alunoContract, disciplinaContract, professorContract } = await loadFixture(deployContracts);
 
-        it("Inserir Aluno should revert for a discipline without a professor", async function () {
-            const { professorContract } = await loadFixture(deployContracts);
-
-            await expect(professorContract.inserirNota(0, 0, 0)).to.be.revertedWith(
-                "Disciplina sem professor"
-            );
+            const signers = await hre.ethers.getSigners()
+            const professorAddr = signers[19].address
+            professorSigner = await ethers.getSigner(professorAddr)
+            
+            await expect(academic.connect(professorSigner).setAlunoContractAddress(alunoContract.address)).to.be.revertedWith('Somente o admin pode concluir essa operacao. Transacao revertida.');
+            await expect(academic.connect(professorSigner).setDisciplinaContractAddress(disciplinaContract.address)).to.be.revertedWith('Somente o admin pode concluir essa operacao. Transacao revertida.');
+            await expect(academic.connect(professorSigner).setProfessorContractAddress(professorContract.address)).to.be.revertedWith('Somente o admin pode concluir essa operacao. Transacao revertida.');
+            await expect(academic.connect(professorSigner).abrirLancamentoNota()).to.be.revertedWith('Somente o admin pode concluir essa operacao. Transacao revertida.');
+            await expect(academic.connect(professorSigner).fecharPeriodo()).to.be.revertedWith('Somente o admin pode concluir essa operacao. Transacao revertida.');
+            await expect(academic.connect(professorSigner).abrirInscricoes()).to.be.revertedWith('Somente o admin pode concluir essa operacao. Transacao revertida.');
         });
-
-        it("Should a professor be able to insert a grade", async function () {
-            const { academic, alunoContract, professorContract, disciplinaContract } = await loadFixture(deployContracts);
-            const [owner, professor, otherAccount] = await hre.ethers.getSigners();
-
-            await disciplinaContract.inserirDisciplina(1, "Blockchain", professor.address);
-            
-            await alunoContract.inserirAluno(1, "Diogo");
-            
-            await academic.abrirLancamentoNota();
-            
-            await professorContract.inserirNota(1, 1, 8);
-            
-            const [alunos, notas] = await disciplinaContract.listarNotasDisciplina(1);
-            expect(alunos[0].nome).to.equal("Diogo");
-            expect(notas[0]).to.equal(8);
-
-        });
-
 
         
-
     });
 
-
-    /*describe("Aluno Contract", function () {
-
-        it("Should register a valid student", async function () {
-            const { alunoContract } = await loadFixture(deployContracts);
-
-            await alunoContract.inserirAluno(1, "Diogo");
-            const aluno = await alunoContract.getAlunoById(1);
-            expect(aluno.nome).to.equal("Diogo");
-            expect(aluno.id).to.equal(1)
-        });
-
-    });*/
 
 });

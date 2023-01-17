@@ -37,7 +37,7 @@ contract AlunoContract is IAlunoContract{
     }
 
     function inscreverDisciplina(uint alunoId, uint disciplinaId) onlyOwner public override{
-      require(bytes(IDisciplinaContract(_disciplinaContractAddr).getDisciplinaById(disciplinaId).nome).length != 0, "Disciplina inexistente.");
+      require(bytes(IDisciplinaContract(_disciplinaContractAddr).getDisciplinaByID(disciplinaId).nome).length != 0, "Disciplina inexistente.");
       
       require(bytes(getAlunoById(alunoId).nome).length != 0, "Aluno nao existente.");
       
