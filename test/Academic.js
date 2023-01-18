@@ -120,7 +120,7 @@ describe("Academic", function () {
 
             
             await expect(academic.connect(professorSigner).setAlunoContractAddress(alunoContract.address)).to.be.revertedWith('Nao autorizado.'); //aqui entra a mesma mensagem caso o contrato não seja autorizado
-
+            
             
             await expect(academic.connect(professorSigner).setDisciplinaContractAddress(disciplinaContract.address)).to.be.revertedWith('Nao autorizado.');
             
@@ -132,9 +132,25 @@ describe("Academic", function () {
             
             await expect(academic.connect(professorSigner).abrirInscricoes()).to.be.revertedWith('Nao autorizado.');
         });
-
         
+       
+
+        //caso de teste aluno tentar se inscrever em uma matéria que não existe
+        //
+        //caso de teste professor inserir nota para um aluno que não existe
     });
 
+    describe("Aluno Contract", function() {
+
+        it("Should not insert a student without ID", async function (){
+            const { alunoContract} = await loadFixture(deployContracts);
+            
+            const signers = await hre.ethers.getSigners();
+            const studentAddr = signers[1].address;
+
+            await expect(alunoContract.inserirAluno(0, "Teste Aluno", studentAddr)).to.be.revertedWith("Aluno inexistente");
+
+        });
+    });
 
 });
