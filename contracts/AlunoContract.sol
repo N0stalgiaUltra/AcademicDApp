@@ -17,7 +17,7 @@ contract AlunoContract is IAlunoContract{
 
 
     modifier onlyOwner(){
-       require(msg.sender == owner, "Nao autorizado");
+       require(msg.sender == owner, "Nao autorizado.");
        _;
     }
 

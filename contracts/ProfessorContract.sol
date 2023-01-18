@@ -21,7 +21,7 @@ contract ProfessorContract is IProfessorContract{
     address private _disciplinaContractAddr;
 
     modifier onlyOwner() {
-        require(msg.sender == owner, "Acesso Negado");
+        require(msg.sender == owner, "Nao Autorizado.");
         _;
     }
     modifier onlyProfessor(uint256 disciplinaId) {

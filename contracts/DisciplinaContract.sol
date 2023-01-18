@@ -20,7 +20,7 @@ contract DisciplinaContract is IDisciplinaContract{
     address _professorContractAddr;
 
     modifier onlyOwner(){
-       require(address(msg.sender) == address(owner), "Nao autorizado.");
+       require(msg.sender == owner, "Nao autorizado.");
        _;
     }
     
@@ -58,12 +58,12 @@ contract DisciplinaContract is IDisciplinaContract{
         return alunosByDisciplina[idDisciplina];
     }
 
-    function setAlunoContractAddress(address alunoContractAddr) public onlyOwner
+    function setAlunoContractAddress(address alunoContractAddr)  public
     {
         _alunoContractAddr = alunoContractAddr;
     }
 
-    function setProfessorContractAddress(address professorContractAddr) public onlyOwner
+    function setProfessorContractAddress(address professorContractAddr) public   
     {
         _professorContractAddr = professorContractAddr;
     }

@@ -70,20 +70,35 @@ describe("Academic", function () {
             `Changed ProfessorContract address in Academic with success!`
         );
         
-        const resultProfessorAluno = await professorContract.setAlunoContractAddress(alunoContract.address)
-        await resultProfessorAluno.wait(1)
+        const resultProfessorAluno = await professorContract.setAlunoContractAddress(alunoContract.address);
+        console.log(
+            `Changed ProfessorContract address in Aluno with success!`
+        );
+        await resultProfessorAluno.wait(1);
 
-        const resultProfessorDisciplina = await professorContract.setDisciplinaContractAddress(disciplinaContract.address)
+        const resultProfessorDisciplina = await professorContract.setDisciplinaContractAddress(disciplinaContract.address);
+        console.log(
+            `Changed disciplina  address in proffessor with success!`
+        );
         await resultProfessorDisciplina.wait(1)
         
         const resultAlunoDisciplina = await alunoContract.setDisciplinaContractAddress(disciplinaContract.address);
+        console.log(
+            `Changed Disciplina address in aluno with success!`
+        );
         await resultAlunoDisciplina.wait(1);
         
-        const resultDisciplinaProfessor = await disciplinaContract.setProfessorContractAddress(professorContract.address)
-        await resultDisciplinaProfessor.wait(1)
+        const resultDisciplinaProfessor = await disciplinaContract.setProfessorContractAddress(professorContract.address);
+        console.log(
+            `Changed professor address in disciplina with success!`
+        );
+        await resultDisciplinaProfessor.wait(1);
       
-        const resultDisciplinaAluno = await disciplinaContract.setAlunoContractAddress(alunoContract.address)
-        await resultDisciplinaAluno.wait(1)
+        const resultDisciplinaAluno = await disciplinaContract.setAlunoContractAddress(alunoContract.address);
+        console.log(
+            `Changed aluno address in disciplina with success!`
+        );
+        await resultDisciplinaAluno.wait(1);
 
         console.log(
             `Deploy finished with success!`
@@ -99,16 +114,23 @@ describe("Academic", function () {
         it("Should not a non-admin register a student", async function () {
             const { academic, alunoContract, disciplinaContract, professorContract } = await loadFixture(deployContracts);
 
-            const signers = await hre.ethers.getSigners()
-            const professorAddr = signers[19].address
-            professorSigner = await ethers.getSigner(professorAddr)
+            const signers = await hre.ethers.getSigners();
+            const professorAddr = signers[19].address;
+            professorSigner = await ethers.getSigner(professorAddr);
+
             
-            await expect(academic.connect(professorSigner).setAlunoContractAddress(alunoContract.address)).to.be.revertedWith('Somente o admin pode concluir essa operacao. Transacao revertida.');
-            await expect(academic.connect(professorSigner).setDisciplinaContractAddress(disciplinaContract.address)).to.be.revertedWith('Somente o admin pode concluir essa operacao. Transacao revertida.');
-            await expect(academic.connect(professorSigner).setProfessorContractAddress(professorContract.address)).to.be.revertedWith('Somente o admin pode concluir essa operacao. Transacao revertida.');
-            await expect(academic.connect(professorSigner).abrirLancamentoNota()).to.be.revertedWith('Somente o admin pode concluir essa operacao. Transacao revertida.');
-            await expect(academic.connect(professorSigner).fecharPeriodo()).to.be.revertedWith('Somente o admin pode concluir essa operacao. Transacao revertida.');
-            await expect(academic.connect(professorSigner).abrirInscricoes()).to.be.revertedWith('Somente o admin pode concluir essa operacao. Transacao revertida.');
+            await expect(academic.connect(professorSigner).setAlunoContractAddress(alunoContract.address)).to.be.revertedWith('Nao autorizado.'); //aqui entra a mesma mensagem caso o contrato não seja autorizado
+
+            
+            await expect(academic.connect(professorSigner).setDisciplinaContractAddress(disciplinaContract.address)).to.be.revertedWith('Nao autorizado.');
+            
+            await expect(academic.connect(professorSigner).setProfessorContractAddress (professorContract.address)).to.be.revertedWith('Nao autorizado.');
+            
+            await expect(academic.connect(professorSigner).abrirLancamentoNota()).to.be.revertedWith('Nao autorizado.');
+            
+            await expect(academic.connect(professorSigner).fecharPeriodo()).to.be.revertedWith('Nao autorizado.');
+            
+            await expect(academic.connect(professorSigner).abrirInscricoes()).to.be.revertedWith('Nao autorizado.');
         });
 
         
