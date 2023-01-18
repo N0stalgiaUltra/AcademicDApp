@@ -151,6 +151,35 @@ describe("Academic", function () {
             await expect(alunoContract.inserirAluno(0, "Teste Aluno", studentAddr)).to.be.revertedWith("Aluno inexistente");
 
         });
+        
+        it("Should not insert student if not in enrollment period", async function(){
+            const {academic, alunoContract} = await loadFixture(deployContracts);
+
+            const signers = await hre.ethers.getSigners();
+            const studentAddr = await signers[1].address;
+            
+            await academic.fecharPeriodo();
+
+            await expect(alunoContract.inserirAluno(0, "Teste", studentAddr)).to.be.revertedWith("Fora do periodo de inscricao de aluno");
+
+        });
+
+        it("Should not insert a student to a invalid discipline", async function(){
+            const { alunoContract} = await loadFixture(deployContracts);
+
+            const signers = await hre.ethers.getSigners();
+            const studentAddr = await signers[1].address;
+            await alunoContract.inserirAluno(1, "TesteStudent", studentAddr);
+            
+            await expect(alunoContract.inscreverDisciplina(1,1)).to.be.revertedWith("Disciplina inexistente.");
+        });
     });
 
+    describe("Professor Contract", function(){
+
+    });
+
+    describe("Discipline Contract", function(){
+
+    });
 });
