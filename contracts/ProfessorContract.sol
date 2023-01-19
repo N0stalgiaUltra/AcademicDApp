@@ -57,7 +57,7 @@ contract ProfessorContract is IProfessorContract{
         alunoIdToDisciplinaIdToNota[alunoId][disciplinaId] = nota;
     }
 
-    function listarNotasDisciplina(uint256 disciplinaId)public view override onlyProfessor(disciplinaId) returns (Aluno[] memory, uint8[] memory)
+    function listarNotasDisciplina(uint256 disciplinaId)public view override  returns (Aluno[] memory, uint8[] memory)
     {
         uint256 numAlunos = IDisciplinaContract(_disciplinaContractAddr).getAlunosByDisciplina(disciplinaId).length;
 
