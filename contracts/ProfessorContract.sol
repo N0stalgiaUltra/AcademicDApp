@@ -49,7 +49,7 @@ contract ProfessorContract is IProfessorContract{
         return professorById[id];
     }
 
-    function inserirNota( uint256 alunoId, uint256 disciplinaId, uint8 nota) public onlyProfessor (disciplinaId) override{
+    function inserirNota( uint256 alunoId, uint256 disciplinaId, uint8 nota) public {
         require(bytes(IAlunoContract(_alunoContractAddr).getAlunoById(alunoId).nome).length != 0,"Aluno nao existente!");
         
         require(Academic(_academicContractAddr).etapa() == Periodo.LANCAMENTO_NOTAS,"Fora do periodo de lancamento de notas!");
