@@ -29,7 +29,7 @@ contract DisciplinaContract is IDisciplinaContract{
     }
 
    function inserirDisciplina(uint id, string memory nome, address professor)  public {
-    require(Academic(_academicContractAddr).etapa() == Periodo.INSCRICAO, "Fora do periodo de inscricao de aluno");
+    require(Academic(_academicContractAddr).etapa() == Periodo.INSCRICAO, "Fora do periodo de inscricao de disciplina");
     //require(address(IProfessorContract(_professorContractAddr)) == address(professor),
 //        "Professor nao existe");
     disciplinaById[id] = Disciplina(id, nome, professor);
